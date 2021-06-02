@@ -1,0 +1,189 @@
+swagger: "2.0"
+info:
+  description: "API definition for the Atanor Brewery ingredients service."
+  version: "1.0.0"
+  title: "Ingredient Service API"
+  termsOfService: "http://atanorchaos.com/terms/"
+  contact:
+    email: "manel.marquez@atanorchaos.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "ingredient-service.atanorchaos.com"
+basePath: "/"
+tags:
+  - name: "ingredient"
+    description: "CRUD service for ingredients"
+    externalDocs:
+      description: "Find out more"
+      url: "http://software.atanorchaos.com/docs"
+schemes:
+  - "https"
+paths:
+  /ingredient:
+    post:
+      tags:
+        - "ingredient"
+      summary: "Add a new ingredient to the warehouse"
+      description: ""
+      operationId: "addIngredient"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Ingredient object that needs to be added to the warehouse"
+          required: true
+          schema:
+            $ref: "#/definitions/Ingredient"
+      responses:
+        "201":
+          description: "Created"
+        "400":
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+    get:
+      tags:
+        - "ingredient"
+      summary: "Finds ingredients"
+      description: "Multiple status values can be provided with comma separated strings"
+      operationId: "findIngredients"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "offset"
+          in: "query"
+          description: "Starting point for paginated results"
+          type: "integer"
+          format: "int64"
+        - name: "limit"
+          in: "query"
+          description: "Number of elements returned in a query"
+          type: "integer"
+          format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Ingredient"
+        "400":
+          description: "Invalid offset/limit supplied"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        "404":
+          description: "Ingredient not found"
+  /ingredient/{id}:
+    get:
+      tags:
+        - "ingredient"
+      summary: "Find ingredient by ID"
+      description: "Returns a single ingredient"
+      operationId: "getIngredientById"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of ingredient to return"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Ingredient"
+        "404":
+          description: "Ingredient not found"
+    put:
+      tags:
+        - "ingredient"
+      summary: "Update an existing ingredient"
+      description: ""
+      operationId: "updateIngredient"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of ingredient to return"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Ingredient object that needs to be updated in the warehouse"
+          required: true
+          schema:
+            $ref: "#/definitions/Ingredient"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Ingredient"
+        "400":
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        "404":
+          description: "Ingredient not found"
+    delete:
+      tags:
+        - "ingredient"
+      summary: "Deletes an ingredient"
+      description: ""
+      operationId: "deleteIngredient"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Ingredient id to delete"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "Ingredient not found"
+definitions:
+  Ingredient:
+    type: "object"
+    required:
+      - "name"
+      - "type"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+        example: "Belgian Pale"
+      description:
+        type: "string"
+        example: "Belgian pale for base mal uses"
+      ingredeintType:
+        type: "string"
+        description: ""
+        enum:
+          - "malt"
+          - "hop"
+          - "yeast"
+          - "adjunct"
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
+externalDocs:
+  description: "Find out more about Atanor"
+  url: "http://wwww.atanorchaos.com"

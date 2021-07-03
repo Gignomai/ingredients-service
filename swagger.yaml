@@ -24,7 +24,7 @@ paths:
     post:
       tags:
         - "ingredient"
-      summary: "Add a new ingredient to the warehouse"
+      summary: "Add a new ingredient to the catalog"
       description: ""
       operationId: "addIngredient"
       consumes:
@@ -34,7 +34,7 @@ paths:
       parameters:
         - in: "body"
           name: "body"
-          description: "Ingredient object that needs to be added to the warehouse"
+          description: "Ingredient object that needs to be added to the catalog"
           required: true
           schema:
             $ref: "#/definitions/Ingredient"
@@ -117,7 +117,7 @@ paths:
           type: "string"
         - in: "body"
           name: "body"
-          description: "Ingredient object that needs to be updated in the warehouse"
+          description: "Ingredient object that needs to be updated in the catalog"
           required: true
           schema:
             $ref: "#/definitions/Ingredient"

@@ -18,4 +18,9 @@ public class MongoDbIngredientRepositoryAdapter implements IngredientRepository 
     public Mono<Ingredient> create(Ingredient ingredient) {
         return mongoDbIngredientRepository.save(ingredient);
     }
+
+    @Override
+    public Mono<Ingredient> getIngredient(String id) {
+        return null;
+    }
 }

@@ -16,6 +16,7 @@ import reactor.test.StepVerifier;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -56,5 +57,24 @@ class IngredientServiceTest {
                         "test".equals(returnedIngredient.getDescription()) &&
                         "test".equals(returnedIngredient.getType()))
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnAGivenIngredient() {
+        Ingredient savedIngredient = Ingredient.builder()
+                .id(UUID.randomUUID().toString())
+                .name("test")
+                .description("test")
+                .type("test")
+                .build();
+
+        Ingredient ingredient = Ingredient.builder()
+                .name("test")
+                .description("test")
+                .type("test")
+                .build();
+
+        when(ingredientRepository.getIngredient(anyString())).thenReturn(Mono.just(savedIngredient));
+
     }
 }

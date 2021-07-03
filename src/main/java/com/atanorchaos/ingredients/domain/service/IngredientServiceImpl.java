@@ -19,4 +19,9 @@ public class IngredientServiceImpl implements IngredientService {
     public Mono<Ingredient> create(Ingredient ingredient) {
         return ingredientRepository.create(ingredient);
     }
+
+    @Override
+    public Mono<Ingredient> getIngredient(String id) {
+        return ingredientRepository.getIngredient(id);
+    }
 }

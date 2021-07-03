@@ -5,4 +5,6 @@ import reactor.core.publisher.Mono;
 
 public interface IngredientService {
     Mono<Ingredient> create(Ingredient ingredient);
+
+    Mono<Ingredient> getIngredient(String id);
 }

@@ -3,23 +3,25 @@ package com.atanorchaos.ingredients.domain.port.primary;
 import com.atanorchaos.ingredients.domain.model.Ingredient;
 import com.atanorchaos.ingredients.domain.port.secondary.IngredientRepository;
 import com.atanorchaos.ingredients.domain.service.IngredientServiceImpl;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
 class IngredientServiceTest {
 
@@ -28,7 +30,7 @@ class IngredientServiceTest {
 
     private IngredientService ingredientService;
 
-    @BeforeAll
+    @BeforeEach
     private void setUp() {
         ingredientService = new IngredientServiceImpl(ingredientRepository);
     }
@@ -49,26 +51,22 @@ class IngredientServiceTest {
                 .build();
 
         when(ingredientRepository.create(any(Ingredient.class))).thenReturn(Mono.just(savedIngredient));
+
         Mono<Ingredient> ingredientMono = ingredientService.create(ingredient);
 
         StepVerifier.create(ingredientMono)
-                .expectNextMatches(returnedIngredient -> returnedIngredient.getId() != null &&
-                        "test".equals(returnedIngredient.getName()) &&
-                        "test".equals(returnedIngredient.getDescription()) &&
-                        "test".equals(returnedIngredient.getType()))
+                .expectNextMatches(returnedIngredient -> savedIngredient.getId().equals(returnedIngredient.getId()) &&
+                        savedIngredient.getName().equals(returnedIngredient.getName()) &&
+                        savedIngredient.getDescription().equals(returnedIngredient.getDescription()) &&
+                        savedIngredient.getType().equals(returnedIngredient.getType()))
                 .verifyComplete();
     }
 
     @Test
     void shouldReturnAGivenIngredient() {
+        String id = UUID.randomUUID().toString();
         Ingredient savedIngredient = Ingredient.builder()
-                .id(UUID.randomUUID().toString())
-                .name("test")
-                .description("test")
-                .type("test")
-                .build();
-
-        Ingredient ingredient = Ingredient.builder()
+                .id(id)
                 .name("test")
                 .description("test")
                 .type("test")
@@ -76,5 +74,16 @@ class IngredientServiceTest {
 
         when(ingredientRepository.getIngredient(anyString())).thenReturn(Mono.just(savedIngredient));
 
+        Mono<Ingredient> ingredientMono = ingredientService.getIngredient(id);
+
+        ArgumentCaptor<String> idArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(ingredientRepository, times(1)).getIngredient(idArgumentCaptor.capture());
+        assertEquals(id, idArgumentCaptor.getValue());
+        StepVerifier.create(ingredientMono)
+                .expectNextMatches(returnedIngredient -> savedIngredient.getId().equals(returnedIngredient.getId()) &&
+                        savedIngredient.getName().equals(returnedIngredient.getName()) &&
+                        savedIngredient.getDescription().equals(returnedIngredient.getDescription()) &&
+                        savedIngredient.getType().equals(returnedIngredient.getType()))
+                .verifyComplete();
     }
 }

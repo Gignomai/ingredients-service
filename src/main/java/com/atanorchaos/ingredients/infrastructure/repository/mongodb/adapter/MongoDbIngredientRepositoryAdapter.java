@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class MongoDbIngredientRepositoryAdapter implements IngredientRepository {
-    private MongoDbIngredientRepository mongoDbIngredientRepository;
+    private final MongoDbIngredientRepository mongoDbIngredientRepository;
 
     public MongoDbIngredientRepositoryAdapter(MongoDbIngredientRepository mongoDbIngredientRepository) {
         this.mongoDbIngredientRepository = mongoDbIngredientRepository;

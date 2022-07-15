@@ -32,7 +32,7 @@ class IngredientRepositoryTest {
     @Test
     void create() {
         Ingredient savedIngredient = Ingredient.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID())
                 .name("test")
                 .description("test")
                 .type("test")

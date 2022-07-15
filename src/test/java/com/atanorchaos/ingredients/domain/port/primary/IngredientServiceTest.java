@@ -16,7 +16,7 @@ import reactor.test.StepVerifier;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -38,7 +38,7 @@ class IngredientServiceTest {
     @Test
     void shouldCreateAnIngredient() {
         Ingredient savedIngredient = Ingredient.builder()
-                .id(UUID.randomUUID().toString())
+                .id(UUID.randomUUID())
                 .name("test")
                 .description("test")
                 .type("test")
@@ -64,7 +64,7 @@ class IngredientServiceTest {
 
     @Test
     void shouldReturnAGivenIngredient() {
-        String id = UUID.randomUUID().toString();
+        UUID id = UUID.randomUUID();
         Ingredient savedIngredient = Ingredient.builder()
                 .id(id)
                 .name("test")
@@ -74,11 +74,11 @@ class IngredientServiceTest {
 
         when(ingredientRepository.getIngredient(anyString())).thenReturn(Mono.just(savedIngredient));
 
-        Mono<Ingredient> ingredientMono = ingredientService.getIngredient(id);
+        Mono<Ingredient> ingredientMono = ingredientService.getIngredient(id.toString());
 
         ArgumentCaptor<String> idArgumentCaptor = ArgumentCaptor.forClass(String.class);
         verify(ingredientRepository, times(1)).getIngredient(idArgumentCaptor.capture());
-        assertEquals(id, idArgumentCaptor.getValue());
+        assertThat(idArgumentCaptor.getValue()).isEqualTo(id.toString());
         StepVerifier.create(ingredientMono)
                 .expectNextMatches(returnedIngredient -> savedIngredient.getId().equals(returnedIngredient.getId()) &&
                         savedIngredient.getName().equals(returnedIngredient.getName()) &&

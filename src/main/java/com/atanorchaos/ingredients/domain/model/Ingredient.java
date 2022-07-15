@@ -5,13 +5,15 @@ import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+import java.util.UUID;
+
+@Document(collection = "ingredients")
 @Builder
 @Getter
 public class Ingredient {
 
     @Id
-    String id;
+    UUID id;
     String name;
     String description;
     String type;

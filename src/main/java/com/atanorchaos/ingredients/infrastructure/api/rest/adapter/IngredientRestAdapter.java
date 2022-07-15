@@ -6,6 +6,8 @@ import com.atanorchaos.ingredients.infrastructure.api.rest.model.IngredientDTO;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Component
 public class IngredientRestAdapter {
 
@@ -15,13 +17,14 @@ public class IngredientRestAdapter {
         this.ingredientService = ingredientService;
     }
 
-    public Mono<String> create(IngredientDTO ingredientDTO) {
+    public Mono<UUID> create(IngredientDTO ingredientDTO) {
         return ingredientService.create(toIngredient(ingredientDTO))
                 .map(Ingredient::getId);
     }
 
     private Ingredient toIngredient(IngredientDTO ingredientDTO) {
         return Ingredient.builder()
+                .id(UUID.randomUUID())
                 .name(ingredientDTO.getName())
                 .description(ingredientDTO.getDescription())
                 .type(ingredientDTO.getType())

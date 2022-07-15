@@ -15,8 +15,7 @@ import reactor.test.StepVerifier;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -35,14 +34,14 @@ class IngredientRestAdapterTest {
 
     @Test
     void shouldCreateAnIngredient() {
-        IngredientDTO ingredientDTO = IngredientDTO.builder()
+        final IngredientDTO ingredientDTO = IngredientDTO.builder()
                 .name("test")
                 .description("test")
                 .type("test")
                 .build();
 
-        String id = UUID.randomUUID().toString();
-        Ingredient ingredient = Ingredient.builder()
+        final UUID id = UUID.randomUUID();
+        final Ingredient ingredient = Ingredient.builder()
                 .id(id)
                 .name("test")
                 .description("test")
@@ -50,19 +49,19 @@ class IngredientRestAdapterTest {
                 .build();
         when(ingredientService.create(any(Ingredient.class))).thenReturn(Mono.just(ingredient));
 
-        Mono<String> idMono = ingredientAdapter.create(ingredientDTO);
+        final Mono<UUID> idMono = ingredientAdapter.create(ingredientDTO);
 
         StepVerifier.create(idMono)
                 .expectNextMatches(id::equals)
                 .verifyComplete();
 
-        ArgumentCaptor<Ingredient> ingredientArgumentCaptor = ArgumentCaptor.forClass(Ingredient.class);
+        final ArgumentCaptor<Ingredient> ingredientArgumentCaptor = ArgumentCaptor.forClass(Ingredient.class);
         verify(ingredientService, times(1)).create(ingredientArgumentCaptor.capture());
 
-        Ingredient recoveredIngredient = ingredientArgumentCaptor.getValue();
-        assertNotNull(recoveredIngredient);
-        assertEquals(ingredientDTO.getName(), recoveredIngredient.getName());
-        assertEquals(ingredientDTO.getDescription(), recoveredIngredient.getDescription());
-        assertEquals(ingredientDTO.getType(), recoveredIngredient.getType());
+        final Ingredient recoveredIngredient = ingredientArgumentCaptor.getValue();
+        assertThat(recoveredIngredient).isNotNull();
+        assertThat(recoveredIngredient.getName()).isEqualTo(ingredientDTO.getName());
+        assertThat(recoveredIngredient.getDescription()).isEqualTo(ingredientDTO.getDescription());
+        assertThat(recoveredIngredient.getType()).isEqualTo(ingredientDTO.getType());
     }
 }

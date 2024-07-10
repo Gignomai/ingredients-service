@@ -29,7 +29,7 @@ class IngredientRestAdapterTest {
     private IngredientRestAdapter ingredientAdapter;
 
     @BeforeEach
-    private void setUp() {
+    public void setUp() {
         ingredientAdapter = new IngredientRestAdapter(ingredientService);
     }
 
